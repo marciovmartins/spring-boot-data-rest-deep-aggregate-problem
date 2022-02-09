@@ -1,0 +1,1 @@
+https://stackoverflow.com/questions/71041196/how-to-update-an-aggregate-with-nested-lists-using-spring-boot-data-rest-jpa-and
