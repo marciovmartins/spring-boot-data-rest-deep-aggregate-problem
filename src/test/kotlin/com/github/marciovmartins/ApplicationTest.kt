@@ -80,7 +80,94 @@ class ApplicationTest {
     }
 
     @Test
-    fun `update and retrieve a game day`() {
+    fun `update and retrieve a game day with one match`() {
+        val gameDayToCreate = """
+            {
+              "date": "2022-02-08",
+              "quote": null,
+              "author": null,
+              "description": null,
+              "matches": [
+                {
+                  "order": 1,
+                  "matchPlayers": [
+                    {
+                      "team": "A",
+                      "nickname": "Ajax",
+                      "goalsInFavor": 5,
+                      "goalsAgainst": 1,
+                      "yellowCards": 1,
+                      "blueCards": 2,
+                      "redCards": 1
+                    },
+                    {
+                      "team": "B",
+                      "nickname": "Zatanna",
+                      "goalsInFavor": 2,
+                      "goalsAgainst": 1,
+                      "yellowCards": 0,
+                      "blueCards": 2,
+                      "redCards": 0
+                    }
+                  ]
+                }
+              ]
+            }
+        """.trimIndent()
+
+        val gameDayToUpdate = """
+            {
+              "date": "2022-02-08",
+              "quote": null,
+              "author": null,
+              "description": null,
+              "matches": [
+                {
+                  "order": 1,
+                  "matchPlayers": [
+                    {
+                      "team": "A",
+                      "nickname": "Ajax",
+                      "goalsInFavor": 4,
+                      "goalsAgainst": 1,
+                      "yellowCards": 1,
+                      "blueCards": 2,
+                      "redCards": 1
+                    },
+                    {
+                      "team": "B",
+                      "nickname": "Zatanna",
+                      "goalsInFavor": 2,
+                      "goalsAgainst": 1,
+                      "yellowCards": 0,
+                      "blueCards": 2,
+                      "redCards": 0
+                    }
+                  ]
+                }
+              ]
+            }
+        """.trimIndent()
+
+        val gameDayLocationUrl = webTestClient.post()
+            .uri(traverson.follow("gameDays").asLink().href)
+            .bodyValue(gameDayToCreate)
+            .exchange().expectStatus().isCreated
+            .returnResult(Unit::class.java)
+            .responseHeaders.location.toString()
+
+        webTestClient.put()
+            .uri(gameDayLocationUrl)
+            .bodyValue(gameDayToUpdate)
+            .exchange().expectStatus().isOk
+        webTestClient.get()
+            .uri(gameDayLocationUrl)
+            .exchange().expectStatus().isOk
+
+    }
+
+    @Test
+    fun `update and retrieve a game day with two matches`() {
         val gameDayToCreate = """
             {
               "date": "2022-02-08",
